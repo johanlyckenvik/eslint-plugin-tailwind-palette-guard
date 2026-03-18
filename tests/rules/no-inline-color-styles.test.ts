@@ -52,6 +52,9 @@ describe("no-inline-color-styles", () => {
         // Template literal with expressions — can't statically analyze, skip
         { code: "<div style={{ color: `${baseColor}` }} />" },
 
+        // LogicalExpression — right side is a non-string expression, skip
+        { code: "<div style={{ color: isError && myColor }} />" },
+
         // Empty style
         { code: "<div style={{}} />" },
 
@@ -336,6 +339,28 @@ describe("no-inline-color-styles", () => {
               messageId: "inlineColor",
               data: { property: "backgroundColor", value: "red" },
             },
+          ],
+        },
+
+        // Bug fix: LogicalExpression in inline style
+        {
+          code: '<div style={{ borderColor: isError && "#ff0000" }} />',
+          errors: [
+            { messageId: "inlineColor", data: { property: "borderColor", value: "#ff0000" } },
+          ],
+        },
+        {
+          code: '<div style={{ color: isError && "red" }} />',
+          errors: [
+            { messageId: "inlineColor", data: { property: "color", value: "red" } },
+          ],
+        },
+
+        // Bug fix: LogicalExpression in SVG attribute
+        {
+          code: '<svg fill={isActive && "#16a34a"} />',
+          errors: [
+            { messageId: "svgColor", data: { attribute: "fill", value: "#16a34a" } },
           ],
         },
 

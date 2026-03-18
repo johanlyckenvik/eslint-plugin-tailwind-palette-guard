@@ -89,6 +89,13 @@ export function* extractStringNodes(node: Rule.Node | null | undefined): Generat
       }
       break;
 
+    case "BinaryExpression":
+      if (node.operator === "+") {
+        yield* extractStringNodes(node.left as Rule.Node);
+        yield* extractStringNodes(node.right as Rule.Node);
+      }
+      break;
+
     case "CallExpression":
       for (const arg of node.arguments) {
         yield* extractStringNodes(arg as Rule.Node);

@@ -124,6 +124,9 @@ const rule: Rule.RuleModule = {
           checkStyleValue(node, property, value.consequent as Rule.Node);
           checkStyleValue(node, property, value.alternate as Rule.Node);
           break;
+        case "LogicalExpression":
+          checkStyleValue(node, property, value.right as Rule.Node);
+          break;
       }
     }
 
@@ -210,6 +213,17 @@ const rule: Rule.RuleModule = {
                     data: { attribute: attrName, value: branch.value },
                   });
                 }
+              }
+            }
+          } else if (expr.type === "LogicalExpression") {
+            const right = (expr as unknown as { right: Rule.Node }).right;
+            if (right.type === "Literal" && typeof right.value === "string") {
+              if (isDisallowedSvgValue(right.value, allowedValues)) {
+                context.report({
+                  node: right,
+                  messageId: "svgColor",
+                  data: { attribute: attrName, value: right.value },
+                });
               }
             }
           }

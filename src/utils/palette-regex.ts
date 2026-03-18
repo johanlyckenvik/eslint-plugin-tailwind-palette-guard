@@ -65,14 +65,14 @@ const colorGroup = COLORS.join("|");
 const shadeGroup = SHADES.join("|");
 const bareGroup = BARE_COLORS.join("|");
 
-// Match: prefix-color-shade with optional /opacity
+// Match: prefix-color-shade with optional /opacity or /[arbitrary]
 const PALETTE_REGEX = new RegExp(
-  `^(${prefixGroup})-(${colorGroup})-(${shadeGroup})(\\/\\d+)?$`,
+  `^(${prefixGroup})-(${colorGroup})-(${shadeGroup})(\\/(?:\\d+|\\[[^\\]]+\\]))?$`,
 );
 
-// Match: prefix-white, prefix-black with optional /opacity
+// Match: prefix-white, prefix-black with optional /opacity or /[arbitrary]
 const BARE_COLOR_REGEX = new RegExp(
-  `^(${prefixGroup})-(${bareGroup})(\\/\\d+)?$`,
+  `^(${prefixGroup})-(${bareGroup})(\\/(?:\\d+|\\[[^\\]]+\\]))?$`,
 );
 
 // Match: prefix-[...] with optional /opacity

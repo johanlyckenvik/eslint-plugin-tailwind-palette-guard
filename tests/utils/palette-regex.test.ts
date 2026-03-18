@@ -80,6 +80,13 @@ describe("isPaletteColor", () => {
     expect(isPaletteColor("hover:text-red-500!")).toBe(true);
   });
 
+  // With arbitrary opacity (Tailwind v4: /[value])
+  it("detects palette color with arbitrary opacity suffix", () => {
+    expect(isPaletteColor("bg-red-500/[0.5]")).toBe(true);
+    expect(isPaletteColor("text-green-600/[33%]")).toBe(true);
+    expect(isPaletteColor("border-blue-300/[.25]")).toBe(true);
+  });
+
   // Should NOT match
   it.each([
     "text-destructive",

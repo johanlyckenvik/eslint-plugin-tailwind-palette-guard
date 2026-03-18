@@ -468,6 +468,25 @@ describe("no-palette-colors", () => {
           errors: [{ messageId: "paletteColor", data: { className: "text-red-500" } }],
         },
 
+        // Bug fix: BinaryExpression string concatenation
+        {
+          code: 'const x = cn("flex " + (condition ? "bg-red-500" : "bg-gray-100"))',
+          errors: [
+            { messageId: "paletteColor", data: { className: "bg-red-500" } },
+            { messageId: "paletteColor", data: { className: "bg-gray-100" } },
+          ],
+        },
+
+        // Bug fix: arbitrary opacity /[value] in Tailwind v4
+        {
+          code: '<div className="bg-red-500/[0.5]" />',
+          errors: [{ messageId: "paletteColor", data: { className: "bg-red-500/[0.5]" } }],
+        },
+        {
+          code: '<div className="text-green-600/[33%]" />',
+          errors: [{ messageId: "paletteColor", data: { className: "text-green-600/[33%]" } }],
+        },
+
         // Bug fix: TemplateLiteral expressions (conditionals inside `${}`) are traversed
         {
           code: '<div className={`${cond ? "text-green-500" : "bg-blue-500"}`} />',
