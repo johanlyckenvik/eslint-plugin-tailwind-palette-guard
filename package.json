@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-tailwind-palette-guard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "ESLint plugin that flags hardcoded Tailwind palette colors in favor of semantic design tokens",
   "keywords": [
     "eslint",
