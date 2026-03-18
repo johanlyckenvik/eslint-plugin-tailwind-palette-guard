@@ -468,6 +468,32 @@ describe("no-palette-colors", () => {
           errors: [{ messageId: "paletteColor", data: { className: "text-red-500" } }],
         },
 
+        // Bug fix: TemplateLiteral expressions (conditionals inside `${}`) are traversed
+        {
+          code: '<div className={`${cond ? "text-green-500" : "bg-blue-500"}`} />',
+          errors: [
+            { messageId: "paletteColor", data: { className: "text-green-500" } },
+            { messageId: "paletteColor", data: { className: "bg-blue-500" } },
+          ],
+        },
+        {
+          code: '<div className={`base ${isError ? "text-red-500" : "text-green-500"}`} />',
+          errors: [
+            { messageId: "paletteColor", data: { className: "text-red-500" } },
+            { messageId: "paletteColor", data: { className: "text-green-500" } },
+          ],
+        },
+
+        // Bug fix: Tailwind v4 trailing `!` important modifier
+        {
+          code: '<div className="text-green-500!" />',
+          errors: [{ messageId: "paletteColor", data: { className: "text-green-500!" } }],
+        },
+        {
+          code: '<div className="hover:bg-blue-500!" />',
+          errors: [{ messageId: "paletteColor", data: { className: "hover:bg-blue-500!" } }],
+        },
+
         // Arbitrary color values
         {
           code: '<div className="text-[#ff0000]" />',

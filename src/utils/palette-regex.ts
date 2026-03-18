@@ -94,7 +94,8 @@ export function stripModifiers(className: string): string {
 
 function cleanClass(className: string): string {
   const base = stripModifiers(className);
-  return base.startsWith("!") ? base.slice(1) : base;
+  const noLeading = base.startsWith("!") ? base.slice(1) : base;
+  return noLeading.endsWith("!") ? noLeading.slice(0, -1) : noLeading;
 }
 
 /**

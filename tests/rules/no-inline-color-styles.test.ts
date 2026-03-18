@@ -24,6 +24,13 @@ describe("no-inline-color-styles", () => {
         { code: '<div style={{ padding: "10px" }} />' },
         { code: '<div style={{ fontSize: "14px" }} />' },
 
+        // Shorthand properties without embedded color — should pass
+        { code: '<div style={{ border: "none" }} />' },
+        { code: '<div style={{ border: "1px solid" }} />' },
+        { code: '<div style={{ borderTop: "0" }} />' },
+        { code: '<div style={{ background: "var(--bg)" }} />' },
+        { code: '<div style={{ boxShadow: "0 0 10px var(--shadow)" }} />' },
+
         // CSS variable references — allowed
         { code: '<div style={{ color: "var(--text-primary)" }} />' },
         { code: '<div style={{ backgroundColor: "var(--bg-card)" }} />' },
@@ -328,6 +335,47 @@ describe("no-inline-color-styles", () => {
             {
               messageId: "inlineColor",
               data: { property: "backgroundColor", value: "red" },
+            },
+          ],
+        },
+
+        // Bug fix: shorthand CSS properties with embedded color tokens
+        {
+          code: '<div style={{ borderTop: "1px solid #e0e0e0" }} />',
+          errors: [
+            {
+              messageId: "inlineColor",
+              data: { property: "borderTop", value: "1px solid #e0e0e0" },
+            },
+          ],
+        },
+        {
+          code: '<div style={{ border: "1px solid red" }} />',
+          errors: [
+            { messageId: "inlineColor", data: { property: "border", value: "1px solid red" } },
+          ],
+        },
+        {
+          code: '<div style={{ background: "#f0f0f0" }} />',
+          errors: [
+            { messageId: "inlineColor", data: { property: "background", value: "#f0f0f0" } },
+          ],
+        },
+        {
+          code: '<div style={{ boxShadow: "0 0 10px rgba(0,0,0,0.5)" }} />',
+          errors: [
+            {
+              messageId: "inlineColor",
+              data: { property: "boxShadow", value: "0 0 10px rgba(0,0,0,0.5)" },
+            },
+          ],
+        },
+        {
+          code: '<div style={{ outline: "2px solid rgb(255, 0, 0)" }} />',
+          errors: [
+            {
+              messageId: "inlineColor",
+              data: { property: "outline", value: "2px solid rgb(255, 0, 0)" },
             },
           ],
         },

@@ -3,14 +3,16 @@ import { minimatch } from "minimatch";
 import type { InlineColorRuleOptions } from "../types.js";
 import {
   COLOR_PROPERTIES,
+  containsColorToken,
   CSS_GLOBAL_VALUES,
+  SHORTHAND_COLOR_PROPERTIES,
   SVG_ALLOWED_VALUES,
   SVG_COLOR_ATTRIBUTES,
 } from "../utils/css-colors.js";
 
 function isColorProperty(name: string, allowedProperties: Set<string>): boolean {
   if (allowedProperties.has(name)) return false;
-  return COLOR_PROPERTIES.has(name);
+  return COLOR_PROPERTIES.has(name) || SHORTHAND_COLOR_PROPERTIES.has(name);
 }
 
 function isDisallowedValue(value: string, allowedValues: Set<string>): boolean {
@@ -87,10 +89,17 @@ const rule: Rule.RuleModule = {
     }
 
     function checkStyleValue(node: Rule.Node, property: string, value: Rule.Node) {
+      const isShorthand = SHORTHAND_COLOR_PROPERTIES.has(property);
+
+      function shouldFlag(raw: string): boolean {
+        if (allowedValues.has(raw.trim())) return false;
+        return isShorthand ? containsColorToken(raw) : isDisallowedValue(raw, allowedValues);
+      }
+
       switch (value.type) {
         case "Literal":
           if (typeof value.value === "string") {
-            if (isDisallowedValue(value.value, allowedValues)) {
+            if (shouldFlag(value.value)) {
               context.report({
                 node: value,
                 messageId: "inlineColor",
@@ -102,7 +111,7 @@ const rule: Rule.RuleModule = {
         case "TemplateLiteral":
           if (value.expressions.length === 0 && value.quasis.length === 1) {
             const raw = value.quasis[0].value.raw;
-            if (isDisallowedValue(raw, allowedValues)) {
+            if (shouldFlag(raw)) {
               context.report({
                 node: value,
                 messageId: "inlineColor",

@@ -28,6 +28,30 @@ export const COLOR_PROPERTIES = new Set([
 ]);
 
 /**
+ * Shorthand CSS properties that can embed color values (e.g. `border: 1px solid red`).
+ * These are handled separately from COLOR_PROPERTIES because their values are compound
+ * (not pure colors), requiring embedded color token detection rather than a plain disallow.
+ */
+export const SHORTHAND_COLOR_PROPERTIES = new Set([
+  "border",
+  "borderTop",
+  "borderRight",
+  "borderBottom",
+  "borderLeft",
+  "borderBlock",
+  "borderBlockStart",
+  "borderBlockEnd",
+  "borderInline",
+  "borderInlineStart",
+  "borderInlineEnd",
+  "outline",
+  "background",
+  "boxShadow",
+  "textShadow",
+  "columnRule",
+]);
+
+/**
  * SVG presentation attributes that accept color values.
  */
 export const SVG_COLOR_ATTRIBUTES = new Set([
@@ -115,6 +139,25 @@ export const CSS_NAMED_COLORS = new Set([
   "wheat", "white", "whitesmoke",
   "yellow", "yellowgreen",
 ]);
+
+/**
+ * Checks if a compound CSS value (e.g. "1px solid #e0e0e0") contains an embedded color token.
+ * Used for shorthand properties like `border`, `background`, `boxShadow`.
+ */
+export function containsColorToken(value: string): boolean {
+  const trimmed = value.trim();
+  if (trimmed.startsWith("var(")) return false;
+
+  // Hex color anywhere in the value
+  if (/#[0-9a-fA-F]{3,8}\b/.test(trimmed)) return true;
+
+  // Color function anywhere in the value
+  if (/\b(rgba?|hsla?|oklch|oklab|lch|lab|color)\(/.test(trimmed)) return true;
+
+  // Named colors as whitespace/comma-separated tokens
+  const tokens = trimmed.split(/[\s,]+/);
+  return tokens.some((token) => CSS_NAMED_COLORS.has(token.toLowerCase()));
+}
 
 /**
  * Checks if a value looks like a CSS color (for arbitrary Tailwind value detection).

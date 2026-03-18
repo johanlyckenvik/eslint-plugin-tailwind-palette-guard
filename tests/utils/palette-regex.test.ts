@@ -67,10 +67,17 @@ describe("isPaletteColor", () => {
     expect(isPaletteColor("text-blue-300/10")).toBe(true);
   });
 
-  // With !important prefix
-  it("detects palette color with !important prefix", () => {
+  // With !important prefix (Tailwind v3: leading !)
+  it("detects palette color with leading !important prefix", () => {
     expect(isPaletteColor("!text-red-500")).toBe(true);
     expect(isPaletteColor("!bg-green-100")).toBe(true);
+  });
+
+  // With !important suffix (Tailwind v4: trailing !)
+  it("detects palette color with trailing !important suffix", () => {
+    expect(isPaletteColor("text-green-500!")).toBe(true);
+    expect(isPaletteColor("bg-blue-500!")).toBe(true);
+    expect(isPaletteColor("hover:text-red-500!")).toBe(true);
   });
 
   // Should NOT match

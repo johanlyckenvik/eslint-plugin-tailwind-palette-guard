@@ -58,6 +58,9 @@ export function* extractStringNodes(node: Rule.Node | null | undefined): Generat
           yield { value: quasi.value.raw, node: quasi as unknown as Rule.Node };
         }
       }
+      for (const expr of node.expressions) {
+        yield* extractStringNodes(expr as Rule.Node);
+      }
       break;
 
     case "ConditionalExpression":
