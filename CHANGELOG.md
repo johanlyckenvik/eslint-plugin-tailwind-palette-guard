@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3] - 2026-03-23
+
+### Changed
+
+- Added changelog link to README (visible on npmjs.com).
+- Added missing 0.1.2 entry to CHANGELOG.
+
 ## [0.1.2] - 2026-03-18
 
 ### Fixed
