@@ -204,6 +204,10 @@ Flags inline `style` attributes that set color CSS properties with literal value
 | `recommended` | `no-palette-colors: warn` |
 | `strict` | `no-palette-colors: warn` + `no-inline-color-styles: warn` |
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a list of changes in each release.
+
 ## License
 
 MIT
